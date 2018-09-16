@@ -41,11 +41,7 @@ namespace ExcelDbModelExporter
                     foreach (DataTable name in a.Tables)
                     {
                         Console.WriteLine(ReadClassNameFromDatasheet(name.TableName));
-                        foreach (var f in name.Columns)
-                        {
-                            DepluralizeWord(f.ToString());
-                            Console.WriteLine(f);
-                        }
+                        DepluralizeWord(ReadClassNameFromDatasheet(name.TableName));
                     }
                 }
             }
@@ -57,37 +53,6 @@ namespace ExcelDbModelExporter
             return output[0];
         }
 
-        private static string DepluralizeWord(string datasheetName)
-        {
-            var splitWord = SplitOnCapitalLetters(datasheetName);c
-            return ds;
-        }
-
-        public static string SplitOnCapitalLetters(string inputString)
-        {
-            List<char> cleanString = inputString.ToList();
-            for (int i = 1; i < cleanString.Count; i++)
-            {
-                if (char.IsUpper(cleanString[i]))
-                {
-                    char[] temp = new char[cleanString.Count - i];
-                    for (int j = 0; j < temp.Length; j++)
-                    {
-                        temp[j] = cleanString[j + i];
-                    }
-                    cleanString[i] = ' ';
-                    cleanString.Add(' ');
-                    int index = 0;
-                    for (int j = i + 1; j < cleanString.Count; j++)
-                    {
-                        cleanString[j] = temp[index];
-                        index++;
-                    }
-                    i++;
-                }
-            }
-            return new string(cleanString.ToArray());
-        }
 
     }
 }
