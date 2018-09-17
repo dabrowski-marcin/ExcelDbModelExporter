@@ -9,14 +9,13 @@ namespace ExcelDbModelExporter
 {
     public class ExcelReader : IDatabaseSchemeReader
     {
-        private const string tempPath = @"C:\Users\marcindx\Downloads\SunWave_Tabele.xls";
+        private const string tempPath = @"C:\Users\Marcin\Downloads\SunWave_Tabele.xls";
         private const char DatasheetNameSeparator = '-';
-        public readonly List<DatabaseEntry> DatabaseEntries = new List<DatabaseEntry>();
+        private readonly List<DatabaseEntry> DatabaseEntries = new List<DatabaseEntry>();
         private readonly DataSet DataSet;
 
         private int NameColumnId;
         private int TypeColumnId;
-        private int DefaultValueColumnId;
 
         private const string FieldNameColIdentifier = "NazwaEN";
         private const string TypeNameColIdentifier = "Typ";
@@ -26,12 +25,12 @@ namespace ExcelDbModelExporter
         public ExcelReader(string path = tempPath)
         {
             DataSet = ReadDataSetFromFile();
-            Read();
+            this.LoadData();
         }
 
         public List<DatabaseEntry> ReadDatabaseEntries()
         {
-            throw new NotImplementedException();
+            return DatabaseEntries;
         }
 
         private void LoadData()
@@ -54,19 +53,14 @@ namespace ExcelDbModelExporter
                     {
                         TypeColumnId = column.Ordinal;
                     }
-                    if (column.ColumnName.Contains(DefaultValueColIdentifier))
-                    {
-                        DefaultValueColumnId = column.Ordinal;
-                    }
                 }
 
                 for (int i = 0; i < table.Rows.Count; i++)
                 {
                     var name = table.Rows[i][NameColumnId].ToString();
                     var type = table.Rows[i][TypeColumnId].ToString();
-                    var defaultValue = table.Rows[i][DefaultValueColumnId].ToString();
 
-                    entry.AddTableMember(new TableMember(name, type, defaultValue));
+                    entry.AddTableMember(new TableMember(name, type));
                 }
 
                 DatabaseEntries.Add(entry);

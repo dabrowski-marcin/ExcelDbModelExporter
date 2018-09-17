@@ -29,7 +29,8 @@ namespace ExcelDbModelExporter
             {
                 case ConsoleKey.D1:
                     // ConsoleOperations.Clear(posStart, posEnd);
-                    ModelCreator.load();
+                    ModelCreator m = new ModelCreator();
+                    m.load();
                     break;
                 case ConsoleKey.D2:
                     ConsoleOperations.Clear(posStart, posEnd);
