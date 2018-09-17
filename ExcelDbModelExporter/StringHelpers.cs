@@ -32,15 +32,49 @@ namespace ExcelDbModelExporter
             return new string(cleanString.ToArray());
         }
 
-        private static string SingularizeWord(string text)
+        public static string SingularizePhrase(PluralityForm form, string phrase)
         {
-            var splitWordArray = SplitOnCapitalLetters(text).Split(' ');
+            switch (form)
+            {
+                case PluralityForm.IrregularIes:
+                    return SingularizeIrregularIes(phrase);
+                case PluralityForm.Standard:
+                    return SingularizeStandard(phrase);
+                case PluralityForm.NotPlural:
+                    return phrase;
+                default:
+                    throw new Exception("An error has occurred during singularization of a phrase.");
+                    
+            }
+        }
+
+        private static string SingularizeStandard(string phrase)
+        {
+            var splitWordArray = SplitOnCapitalLetters(phrase).Split(' ');
 
             for (int i = 0; i < splitWordArray.Length; i++)
             {
                 if (splitWordArray[i].EndsWith('s'))
                 {
                     splitWordArray[i] = splitWordArray[i].Remove(splitWordArray[i].Length - 1);
+                }
+            }
+
+            string s = String.Join(string.Empty, splitWordArray);
+
+            return s;
+        }
+
+        private static string SingularizeIrregularIes(string phrase)
+        {
+            var splitWordArray = SplitOnCapitalLetters(phrase).Split(' ');
+
+            for (int i = 0; i < splitWordArray.Length; i++)
+            {
+                if (splitWordArray[i].EndsWith("ies"))
+                {
+                    splitWordArray[i] = splitWordArray[i].Remove(splitWordArray[i].Length - 3);
+                    splitWordArray[i] = splitWordArray[i] + "y";
                 }
             }
 
