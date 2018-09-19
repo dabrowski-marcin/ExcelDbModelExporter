@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace ExcelDbModelExporter
 {
     public class ModelCreator
     {
-        private const string tempPath = @"C:\Users\Marcin\Downloads\SunWave_Tabele.xls";
-        private const char DatasheetNameSeparator = '-';
-        private const int IndentationDepth = 4;
-
         private ExcelReader _excelReader;
 
         public void load()
@@ -29,13 +23,13 @@ namespace ExcelDbModelExporter
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append($"public class {databaseEntry.TableName}\n");
-                sb.Append("{\n");
+                sb.AppendLine($"public class {databaseEntry.TableName}");
+                sb.AppendLine("{");
                 foreach (var memeber in databaseEntry.TableMembers)
                 {
-                    sb.Append(CreateMember(memeber.Name, memeber.TypeAndAttributes));
+                    sb.AppendLine(CreateMember(memeber.Name, memeber.TypeAndAttributes, memeber.DefaultValue));
                 }
-                sb.Append("}");
+                sb.AppendLine("}");
                 stringBuilders.Add(sb);
 
                 Console.WriteLine(sb.ToString());
@@ -44,44 +38,38 @@ namespace ExcelDbModelExporter
             return stringBuilders;
         }
 
-        private string CreateMember(string name, string type)
+        private string CreateMember(string name, string type, string defaultValue)
         {
             var lowerType = type.ToLowerInvariant();
+            string additionalAttributes = ClassCreator.RequiredStringAttribute(defaultValue.ToLowerInvariant());
 
             if (lowerType.Contains("string"))
             {
-                var efsa = EntityFrameworkStringAttribute(type);
-                return $"{efsa}    public string {name};\n\n";
+                additionalAttributes += ClassCreator.NvarcharStringAttribute(type);
+                return ClassCreator.CreatePublicNamedProperty(Types.String, name, additionalAttributes);
             }
 
             if (lowerType.Contains("int"))
             {
-                return $"    public int {name};\n\n";
+                return ClassCreator.CreatePublicNamedProperty(Types.Int, name, additionalAttributes);
             }
 
             if (lowerType.Contains("bool"))
             {
-                return $"    public bool {name};\n\n";
+                return ClassCreator.CreatePublicNamedProperty(Types.Bool, name, additionalAttributes);
             }
 
             if (lowerType.Contains("decimal"))
             {
-                return $"    public decimal {name};\n\n";
+                return ClassCreator.CreatePublicNamedProperty(Types.Decimal, name, additionalAttributes);
+            }
+
+            if (lowerType.Contains("datetime"))
+            {
+                return ClassCreator.CreatePublicNamedProperty(Types.DateTime, name, additionalAttributes);
             }
 
             return String.Empty;
-        }
-
-        private string EntityFrameworkStringAttribute(string type)
-        {
-            Regex regex = new Regex(@"(?:\w*)([\([\d]*\))");
-            var length = StripParenthesis(regex.Match(type).Groups[1].Value);
-            return $"    [Column(TypeName = \"NVARCHAR\")]\n    [StringLength({length})]\n";
-        }
-
-        private string StripParenthesis(string phrase)
-        {
-            return phrase.Replace("(", string.Empty).Replace(")", string.Empty);
         }
     }
 }
