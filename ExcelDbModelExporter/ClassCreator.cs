@@ -22,18 +22,10 @@ namespace ExcelDbModelExporter
         private const string Indentation = "    ";
 
 
-        public static string CreatePublicNamedProperty(Types type, string name, string defaultValue)
+        public static string CreatePublicNamedProperty(Types type, string name, string optionalArguments = "")
         {
             var lowerType = type.ToString().ToLowerInvariant();
-            string efAnnotations;
             var propertyString = $"{Indentation}{PublicAccessor} {lowerType} {name} {AutoProperty}\n";
-
-            switch (type)
-            {
-                case Types.String:
-                    efAnnotations = NvarcharStringAttribute(name)
-
-            }
 
             if (!String.IsNullOrEmpty(optionalArguments))
             {

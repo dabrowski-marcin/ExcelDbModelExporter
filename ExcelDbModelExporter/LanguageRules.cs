@@ -21,7 +21,11 @@ namespace ExcelDbModelExporter
 
             for (int i = 0; i < splitWordArray.Length; i++)
             {
-                if (IsIrregular(phrase))
+                if (splitWordArray[i].Contains("Resources"))
+                {
+                    pluralityForm = PluralityForm.NotPlural;
+                }
+                else if (IsIrregular(splitWordArray[i]))
                 {
                     pluralityForm = PluralityForm.IrregularIes;
                 }

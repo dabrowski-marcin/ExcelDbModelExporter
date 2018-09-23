@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Net.Mime;
-using System.Text;
 
 namespace ExcelDbModelExporter
 {
@@ -30,7 +28,7 @@ namespace ExcelDbModelExporter
                 case ConsoleKey.D1:
                     // ConsoleOperations.Clear(posStart, posEnd);
                     ModelCreator m = new ModelCreator();
-                    m.load();
+                    m.CreateAndSaveModels();
                     break;
                 case ConsoleKey.D2:
                     ConsoleOperations.Clear(posStart, posEnd);
